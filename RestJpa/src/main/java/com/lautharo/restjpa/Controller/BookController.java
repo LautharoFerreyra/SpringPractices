@@ -2,12 +2,10 @@ package com.lautharo.restjpa.Controller;
 
 import com.lautharo.restjpa.Entities.Book;
 import com.lautharo.restjpa.Repository.BookRepo;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,12 +26,11 @@ public class BookController {
 
     //Crud sobre la entidad Book
 
-    //Buscar todos los libros
+    //Buscar todos los libros que estan en la db
 
     @GetMapping("/api/books")
     public List<Book> findAll() {
         //recupeara y devolver los libros de la db
-
         return repository.findAll();
 
     }
@@ -53,13 +50,17 @@ public class BookController {
         //op 2
 //        return repository.findById(id).orElse(null);
     }
+    //con el pathvariable encuentra el libro por su Id  con el {id}
+
+
 
     //Crear un libro en la base de datos
     @PostMapping("/api/books")
-    public Book create(Book book){
+    public Book create(@RequestBody Book book, @RequestHeader HttpHeaders headers){
+        System.out.println(headers.get("User-Agent"));
     //guardar libro
-        repository.save(book);
-        return book;
+        return repository.save(book);
+
 
     }
 
