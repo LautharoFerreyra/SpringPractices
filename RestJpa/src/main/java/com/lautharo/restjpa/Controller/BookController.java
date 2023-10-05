@@ -4,7 +4,6 @@ import com.lautharo.restjpa.Entities.Book;
 import com.lautharo.restjpa.Repository.BookRepo;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,6 +38,7 @@ public class BookController {
     //Buscar un libro por id
     @GetMapping("/api/books/{id}")
     public ResponseEntity <Book> findById(@PathVariable Long id) {
+        //con el pathvariable encuentra el libro por su Id  con el {id}
         //Recuperar y devolver un libro por id
         //op 1
         Optional<Book> bookOpt= repository.findById(id);
@@ -48,20 +48,31 @@ public class BookController {
             return ResponseEntity.notFound().build();
         }
         //op 2
-//        return repository.findById(id).orElse(null);
+        //return repository.findById(id).orElse(null);
     }
-    //con el pathvariable encuentra el libro por su Id  con el {id}
-
 
 
     //Crear un libro en la base de datos
     @PostMapping("/api/books")
-    public Book create(@RequestBody Book book, @RequestHeader HttpHeaders headers){
+    public ResponseEntity<Object> create(@RequestBody Book book, @RequestHeader HttpHeaders headers){
         System.out.println(headers.get("User-Agent"));
-    //guardar libro
+        //guardar libro
+        if(book.getId() != null ) {// quiere decir que existe el id y por lo tanto no es una creacio
+            log.warn("");
+
+
+            return ResponseEntity.badRequest().build();
+        }
         return repository.save(book);
 
 
+    }
+
+    //Actualizar un libro existente en la db
+
+    @PutMapping("/api/books")
+    public Book update(@RequestBody Book book){
+        return repository.save(book);
     }
 
     // Borrar un libro de la base de datos
